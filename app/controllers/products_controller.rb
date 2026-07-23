@@ -1,10 +1,14 @@
 class ProductsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_product, only: %i[ show edit update destroy]
   def index
     @products = Product.all
   end
 
   def show
-    @product = Product.find(params[:id])
+    # This becomes redundant when using the before_action portion. Can write it once and remove show/edit/update code
+    # @product = Product.find(params[:id])
+
   end
 
   def new
@@ -21,11 +25,11 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    @product = Product.find(params[:id])
+    # @product = Product.find(params[:id])
   end
 
   def update
-    @product = Product.find(params[:id])
+    # @product = Product.find(params[:id])
     if @product.update(product_params)
       redirect_to @product
     else
@@ -33,7 +37,15 @@ class ProductsController < ApplicationController
     end
   end
 
+  def destroy
+    @product.destroy
+    redirect_to products_path
+  end
+
   private
+    def set_product
+      @product = Product.find(params[:id])
+    end
     def product_params
       params.expect(product: [ :name ])
     end
